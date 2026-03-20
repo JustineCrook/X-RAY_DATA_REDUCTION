@@ -233,9 +233,6 @@ Each folder `./spectral_fit_results_bin*/ contains:
 - This notebook shows how to do manual fits in PyXspec for different models.
 
 
-### NOTEBOOKS/binning_comparison.ipynb:
-- If you ran both with both FIT_WITH_BINNING=True and FIT_WITH_BINNING=False, you can use this notebook to compare these flux results. 
-
 
 ---
 
@@ -250,6 +247,7 @@ After fitting, based on the results (and any other knowledge about spectral stat
 - Indexes correspond to rows in `fit_outputs.txt` (leftmost number). 
 
 
+
 ### Example
 
 ```python
@@ -261,6 +259,18 @@ MODELS_INDEXES = [
 ]
 ```
 This means that we should use the powerlaw model for points 0-5 and 10-15 and 20, and the diskbb model for points 6-9 and 16-20.
+
+
+
+
+### Outputs:
+- The results will either be in ./final_spectral_fit_results_bin/ (for FIT_WITH_BINNING=True) or ./final_spectral_fit_results_bin1/ (FIT_WITH_BINNING=False).
+
+
+
+### NOTEBOOKS/binning_comparison.ipynb:
+- If you ran both with both FIT_WITH_BINNING=True and FIT_WITH_BINNING=False, you can use this notebook to compare these flux results. 
+
 
 
 
