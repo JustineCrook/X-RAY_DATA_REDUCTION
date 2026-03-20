@@ -265,7 +265,7 @@ This means that we should use the powerlaw model for points 0-5 and 10-15 and 20
 ---
 
 ## TO DO:
-- Parallise the fitting so that it is done faster. 
+- Parallelise the fitting so that it is done faster. 
 - Add the upper limits functionality again?
 - Add functionality for models with spectral lines, which may be needed for NICER spectra. 
 - Add code for extracting NICER spectra. 
