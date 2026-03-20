@@ -470,62 +470,62 @@ def plot_spectral_results(models = None, models_indexes = None):
 
 
 
-        top_ax = ax[0]    
-        ax_main = ax[-1]      
-        orig_xlim = ax_main.get_xlim()
-        orig_ylim = ax_main.get_ylim()
-        orig_top_locator = top_ax.xaxis.get_major_locator()
-        orig_top_formatter = top_ax.xaxis.get_major_formatter()
-        orig_top_xlabel = top_ax.get_xlabel()
-        orig_axes = list(fig.axes)   # snapshot of axes that exist now
-        # Save separate images for each contiguous segment 
-        for seg_i, (sidx, eidx) in enumerate(_segments, start=1):
-          
-            seg_mjd_min = _mjd_all[sidx]
-            seg_mjd_max = _mjd_all[eidx]
-            seg_xmin = seg_mjd_min - 5.0
-            seg_xmax = seg_mjd_max + 5.0
+    top_ax = ax[0]    
+    ax_main = ax[-1]      
+    orig_xlim = ax_main.get_xlim()
+    orig_ylim = ax_main.get_ylim()
+    orig_top_locator = top_ax.xaxis.get_major_locator()
+    orig_top_formatter = top_ax.xaxis.get_major_formatter()
+    orig_top_xlabel = top_ax.get_xlabel()
+    orig_axes = list(fig.axes)   # snapshot of axes that exist now
+    # Save separate images for each contiguous segment 
+    for seg_i, (sidx, eidx) in enumerate(_segments, start=1):
+        
+        seg_mjd_min = _mjd_all[sidx]
+        seg_mjd_max = _mjd_all[eidx]
+        seg_xmin = seg_mjd_min - 5.0
+        seg_xmax = seg_mjd_max + 5.0
 
-            # convert to datetime for set_xlim (your plots use Time(...).datetime)
-            seg_xlim_dt = Time([seg_xmin, seg_xmax], format='mjd').datetime
+        # convert to datetime for set_xlim (your plots use Time(...).datetime)
+        seg_xlim_dt = Time([seg_xmin, seg_xmax], format='mjd').datetime
 
-            ax[-1].set_xlim(seg_xlim_dt[0], seg_xlim_dt[1])
+        ax[-1].set_xlim(seg_xlim_dt[0], seg_xlim_dt[1])
 
-            # Optionally adjust formatting ticks for this narrower range:
-            _all_dates_seg = _mjd_all[(_mjd_all >= seg_mjd_min) & (_mjd_all <= seg_mjd_max)]
-            if _all_dates_seg.size > 1:
-                T_seg = _all_dates_seg[-1] - _all_dates_seg[0]
-                dt_seg = int(max(1, T_seg // 4))
-            else:
-                dt_seg = 1
-            FormatAxis(ax, _all_dates_seg, interval=dt_seg)
+        # Optionally adjust formatting ticks for this narrower range:
+        _all_dates_seg = _mjd_all[(_mjd_all >= seg_mjd_min) & (_mjd_all <= seg_mjd_max)]
+        if _all_dates_seg.size > 1:
+            T_seg = _all_dates_seg[-1] - _all_dates_seg[0]
+            dt_seg = int(max(1, T_seg // 4))
+        else:
+            dt_seg = 1
+        FormatAxis(ax, _all_dates_seg, interval=dt_seg)
 
 
-            # Save segment image
-            name = "_".join(models)
-            if models_indexes!=[]: seg_name = f"{final_dir}final_fit_selection_{name}_segment{seg_i}.png"
-            else: seg_name = f"{filename}all_fits_{name}_segment{seg_i}.png"
-            print(f"Saving segment {seg_i}: MJD {seg_mjd_min:.2f}--{seg_mjd_max:.2f} -> {seg_name}")
-            plt.savefig(seg_name)
+        # Save segment image
+        name = "_".join(models)
+        if models_indexes!=[]: seg_name = f"{final_dir}final_fit_selection_{name}_segment{seg_i}.png"
+        else: seg_name = f"{filename}all_fits_{name}_segment{seg_i}.png"
+        print(f"Saving segment {seg_i}: MJD {seg_mjd_min:.2f}--{seg_mjd_max:.2f} -> {seg_name}")
+        plt.savefig(seg_name)
 
-            sec = getattr(ax_main, "_mjd_secondary_axis", None)
-            if sec is not None:
-                try:
-                    sec.remove()
-                except Exception:
-                    pass
-                ax_main._mjd_secondary_axis = None
+        sec = getattr(ax_main, "_mjd_secondary_axis", None)
+        if sec is not None:
+            try:
+                sec.remove()
+            except Exception:
+                pass
+            ax_main._mjd_secondary_axis = None
 
-            # restore top axis locator/formatter etc if you saved them earlier
-            top_ax.xaxis.set_major_locator(orig_top_locator)
-            top_ax.xaxis.set_major_formatter(orig_top_formatter)
-            top_ax.set_xlabel(orig_top_xlabel)
-            top_ax.tick_params(axis='x', labeltop=True, labelbottom=False)
+        # restore top axis locator/formatter etc if you saved them earlier
+        top_ax.xaxis.set_major_locator(orig_top_locator)
+        top_ax.xaxis.set_major_formatter(orig_top_formatter)
+        top_ax.set_xlabel(orig_top_xlabel)
+        top_ax.tick_params(axis='x', labeltop=True, labelbottom=False)
 
-            # restore main axis limits or autoscale back
-            ax_main.set_xlim(orig_xlim)
-            ax_main.relim()
-            ax_main.autoscale_view()
+        # restore main axis limits or autoscale back
+        ax_main.set_xlim(orig_xlim)
+        ax_main.relim()
+        ax_main.autoscale_view()
 
 
     
