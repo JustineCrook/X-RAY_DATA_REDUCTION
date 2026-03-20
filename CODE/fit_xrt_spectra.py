@@ -693,7 +693,7 @@ def run_spectral_fit( spectral_folder = "./spectra_swift_xrt/" ):
     #############################################
 
     # Outputs from here on will be saved to file
-    sys.stdout = open(folder+"output.txt", "w")  
+    sys.stdout = open(folder + "output.txt", "w", buffering=1) 
 
 
     #############################################
