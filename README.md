@@ -169,9 +169,9 @@ Each spectrum is processed as follows:
 - `EMIN`, `EMAX` – Energy range over which to extract unabsorbed flux  
 - `NH` – The expected column density (N_h) in units of 10^{22} cm^{-2}. Or if it is expected to change, just list a good value for initialisation. 
 - `NH_FIX_ALL_EPOCHS` - Whether to fix N_h in all the fits.   
-- `LOW_COUNT_THRESHOLD` - For the spectra with counts < LOW_COUNT_THRESHOLD, we just fit with a powerlaw, with fixed parameters (PLAW_GAMMA_LOW_COUNT and NH). 
-- `PLAW_GAMMA_LOW_COUNT` - The powerlaw photon index to use for spectra with counts < LOW_COUNT_THRESHOLD. 
-- `NH_COUNTS_THRESHOLD` - This parameter is applicable/only used in cases when NH_FIX_ALL_EPOCHS=False and when NH_COUNTS_THRESHOLD > LOW_COUNT_THRESHOLD (since N_h will always be fixed when counts < LOW_COUNT_THRESHOLD).   
+- `LOW_COUNT_THRESHOLD` - For the spectra with counts < `LOW_COUNT_THRESHOLD`, we just fit with a powerlaw, with fixed parameters (`PLAW_GAMMA_LOW_COUNT` and `NH`). 
+- `PLAW_GAMMA_LOW_COUNT` - The powerlaw photon index to use for spectra with counts < `LOW_COUNT_THRESHOLD`. 
+- `NH_COUNTS_THRESHOLD` - This parameter is applicable/only used in cases when `NH_FIX_ALL_EPOCHS=False` and when `NH_COUNTS_THRESHOLD` > `LOW_COUNT_THRESHOLD` (since N_h will always be fixed when counts < `LOW_COUNT_THRESHOLD`).   
 
 
 ### Model Initialisation Format
@@ -264,9 +264,7 @@ This means that we should use the powerlaw model for points 0-5 and 10-15 and 20
 
 ---
 
-
-
-* TO DO:
+## TO DO:
 - Parallise the fitting so that it is done faster. 
 - Add the upper limits functionality again?
 - Add functionality for models with spectral lines, which may be needed for NICER spectra. 
