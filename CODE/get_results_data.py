@@ -214,8 +214,9 @@ def get_swift_xrt_counts(verbose=True, incbad = True, just_ids = False):
 
     # If downloaded via the API, the different IDs will be in different folders
     # If copied from the website, all the results will be in one folder
-    try: sub_files = glob.glob(f'{file}/00*')
-    except: sub_files = [file] 
+    sub_files = glob.glob(f'{file}/00*')
+    if not sub_files:
+        sub_files = [file]
 
     # The routine creates separate sub-folders for each ID
     for lc_file in sub_files:
@@ -745,12 +746,12 @@ def plot_count_rates_and_hr(gap_days=60):
 
         # ---------- Panel 8: XRT HR ----------
         ax = axes[8]
-        if np.any(xrt_mask):
-            ax.errorbar(Time(xrt_mjds[xrt_mask], format='mjd').datetime, xrt_hr[xrt_mask],
-                        yerr=xrt_hr_unc[xrt_mask], fmt='o', ms=5, color='red', uplims = xrt_uplims_bool[xrt_mask])
+        if np.any(xrt_hr_mask):
+            ax.errorbar(Time(xrt_hr_mjds[xrt_hr_mask], format='mjd').datetime, xrt_hr[xrt_hr_mask],
+                        yerr=xrt_hr_unc[xrt_hr_mask], fmt='o', ms=5, color='red')
         ax.set_ylabel(f'XRT\nHR\n({xrt_hard_lo}-{xrt_hard_hi} / {xrt_soft_lo}-{xrt_soft_hi})')
-        ymin = max(0.0, np.min(xrt_hr[xrt_mask] - xrt_hr_unc[xrt_mask]))
-        ymax = min(2.0, np.max(xrt_hr[xrt_mask] + xrt_hr_unc[xrt_mask]))
+        ymin = max(0.0, np.min(xrt_hr[xrt_hr_mask] - xrt_hr_unc[xrt_hr_mask]))
+        ymax = min(2.0, np.max(xrt_hr[xrt_hr_mask] + xrt_hr_unc[xrt_hr_mask]))
         ax.set_ylim(ymin, ymax)
         #ax.grid(True, which='both', ls=':')
 
