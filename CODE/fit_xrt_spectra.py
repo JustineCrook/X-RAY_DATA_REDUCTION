@@ -20,6 +20,7 @@ import astropy.units as u
 from astropy.time import Time, TimeDelta
 import multiprocessing as mp
 from xspec import Xset
+import signal
 
 
 from xspec import * 
@@ -693,6 +694,16 @@ def run_spectral_fit( spectral_folder = "./spectra_swift_xrt/" ):
 
     # Outputs from here on will be saved to file
     sys.stdout = open(folder+"output.txt", "w")  
+
+
+    #############################################
+    ## Define functions to be used during the fit
+
+    class FitTimeout(Exception):
+        pass
+
+    def _timeout_handler(signum, frame):
+        raise FitTimeout("Fit.error timed out")
     
 
     #############################################
@@ -980,20 +991,16 @@ def run_spectral_fit( spectral_folder = "./spectra_swift_xrt/" ):
                     # If we put "1.0", this indicates that we want 68% uncertainty.
                     # The maximum keyword ensures that error will not be run if the reduced chi-squared of the best fit exceeds <redchi>. The default value for <redchi> is 2.0. We set it a bit higher.
                     n_params = mod_obj.nParameters
-                    #Fit.error(f'maximum 3.0 nonew 1.0 1-{n_params}') 
-                    
-                    def run_fit_error():
-                        Fit.error(f'maximum 3.0 1.0 1-{n_params}')
 
-                    p = mp.Process(target=run_fit_error)
-                    p.start()
-                    p.join(60)
+                    # Fit.error(f'maximum 3.0 nonew 1.0 1-{n_params}') 
 
-                    if p.is_alive():
-                        p.terminate()
-                        p.join()
-                        raise RuntimeError("Fit.error exceeded 60 seconds and was terminated")
-                    
+                    signal.signal(signal.SIGALRM, _timeout_handler)
+                    signal.alarm(60)
+                    try:
+                        Fit.error(f"maximum 3.0 1.0 1-{n_params}")
+                    finally:
+                        signal.alarm(0)
+                   
                     print("Fit error calculation succeeded.")
 
 
