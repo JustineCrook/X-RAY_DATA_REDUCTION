@@ -259,7 +259,7 @@ def plot_spectral_results(models = None, models_indexes = None):
         print("Getting final results...")
 
         # Store final fits in a separate folder, for evaluation
-        final_dir = "./spectral_fit_final_results"
+        final_dir = "./final_spectral_fit_results"
         if fit_with_binning: final_dir += "_bin/"
         else: final_dir += "_bin1/"
 

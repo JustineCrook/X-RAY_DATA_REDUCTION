@@ -6,8 +6,8 @@ final_lightcurves/
 lightcurves_swift_xrt/
 spectra_api/
 spectra_swift_xrt/
-spectral_fit_final_results_bin/
-spectral_fit_final_results_bin1/
+final_spectral_fit_results_bin/
+final_spectral_fit_results_bin1/
 spectral_fit_residuals_bin/
 spectral_fit_residuals_bin1/
 spectral_fit_results_bin/

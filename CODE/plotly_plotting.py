@@ -235,7 +235,7 @@ def plot_binning_comparison(plotly = True):
     Function to compare the fluxes obtained from spectral fitting with binning (min_counts_chi = 20) and without binning (min_counts_chi = 1) for the same set of spectra. It reads in the results from the two different fitting runs, extracts the relevant data, and creates both a matplotlib plot and a plotly plot to visualize the comparison.
     """
 
-    file1 = Path(__file__).resolve().parent.parent / "spectral_fit_final_results_bin" / "final_fit_selection.csv"
+    file1 = Path(__file__).resolve().parent.parent / "final_spectral_fit_results_bin" / "final_fit_selection.csv"
     
     data1 = pd.read_csv(file1)
     ids1 = data1['obs_id'].to_numpy()
@@ -245,7 +245,7 @@ def plot_binning_comparison(plotly = True):
     flux_er_pos1 = data1['flux_er_pos'].to_numpy()
 
 
-    file2 = Path(__file__).resolve().parent.parent / "spectral_fit_final_results_bin1" / "final_fit_selection.csv"
+    file2 = Path(__file__).resolve().parent.parent / "final_spectral_fit_results_bin1" / "final_fit_selection.csv"
 
     data2 = pd.read_csv(file2)
     ids2 = data2['obs_id'].to_numpy()
