@@ -64,7 +64,7 @@ Notably:
 - Run the pipeline using:
 ```bash
 python main_runner.py
-
+```
 
 ---
 
