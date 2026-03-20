@@ -262,6 +262,15 @@ MODELS_INDEXES = [
 ```
 This means that we should use the powerlaw model for points 0-5 and 10-15 and 20, and the diskbb model for points 6-9 and 16-20.
 
+
+
+---
+
+## Get Dates 
+
+In the code folder, the script `fit_xrt_spectra.py` is the most accurate way to get the Swift/XRT dates. This uses `swifttime`. 
+
+
 ---
 
 ## TO DO:

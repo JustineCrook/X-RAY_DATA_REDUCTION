@@ -11,7 +11,6 @@ import numpy as np
 
 
 
-# GX 339
     
 path = "../spectra_swift_xrt/"
 output_csv = "xray_dates.csv"
