@@ -3,7 +3,7 @@
 ## FUNCTION TO RUN
 # Change the line below to run different functions
 # Options: get_swift_xrt_data, group_spectra, plot_count_rates_and_hr, fit, get_final_results
-ANALYSIS_TYPE = "plot_count_rates_and_hr"
+ANALYSIS_TYPE = "fit"
  
 
 
@@ -83,8 +83,8 @@ TRANSITIONS = None # MJD of state transitions to mark with vertical lines (if an
 INCBAD = True
 
 # MJD range for filtering spectra (None = no filtering)
-MJD_MIN = None  # Minimum MJD to include (e.g., 59700.0)
-MJD_MAX = None # Maximum MJD to include (e.g., 59750.0)
+MJD_MIN = 60587  # Minimum MJD to include (e.g., 59700.0)
+MJD_MAX = 60589 # Maximum MJD to include (e.g., 59750.0)
 
 
 # Whether to run with binning or not

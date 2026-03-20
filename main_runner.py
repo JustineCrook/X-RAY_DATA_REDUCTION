@@ -1,5 +1,5 @@
-# Before running, activate the virtual environment:
-# source /mnt/users/crookmansourj/swiftenv/bin/activate
+# Before running, activate your venv environment:
+# e.g., source /mnt/users/crookmansourj/swiftenv/bin/activate
 # This environment has swiftools 3.0.22
 
 import sys

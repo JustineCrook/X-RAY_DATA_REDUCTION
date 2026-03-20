@@ -500,21 +500,15 @@ def run_spectral_fit( spectral_folder = "./spectra_swift_xrt/" ):
 
     if any(model not in ['powerlaw', 'pegged_powerlaw', 'diskbb', 'powerlaw+diskbb', 'pegged_powerlaw+diskbb', 'diskbb+bbodyrad','powerlaw+bbodyrad'] for model in models):
         raise ValueError(f"Error: Invalid model(s) found in array. Allowed values are: {['powerlaw', 'pegged_powerlaw', 'diskbb', 'powerlaw+diskbb', 'pegged_powerlaw+diskbb', 'diskbb+bbodyrad','powerlaw+bbodyrad']}")
-    
 
-    print("Xspec version: ", Xset.version)
-    
-    if fit_with_binning:
-        print("Fitting with binning...")
-        name = "bin"
-    else: 
-        print("Fitting with bin1...")
-        name = "bin1"
 
 
 
     #############################################
     ## SET UP THE FOLDERS FOR THE RESULTS
+
+    if fit_with_binning: name = "bin"
+    else: name = "bin1"
 
     # Folder for the results
     folder = './spectral_fit_results'
@@ -522,7 +516,7 @@ def run_spectral_fit( spectral_folder = "./spectra_swift_xrt/" ):
     if os.path.exists(folder):
         shutil.rmtree(folder)  
     os.makedirs(folder)  
-    print(f"Spectral results will be saved to: {folder}")
+    
 
 
     # Folder for the residuals
@@ -531,7 +525,17 @@ def run_spectral_fit( spectral_folder = "./spectra_swift_xrt/" ):
     if os.path.exists(plots_dir):
         shutil.rmtree(plots_dir)  
     os.makedirs(plots_dir) 
+
+
+    print(f"Spectral results will be saved to: {folder}")
     print(f"Spectral fit residuals will be saved to: {plots_dir}\n")
+    print()
+
+
+    print("Xspec version: ", Xset.version)
+    if fit_with_binning: print("Fitting with binning...\n")
+    else: print("Fitting with bin1...\n") 
+      
 
 
     #############################################
@@ -544,7 +548,7 @@ def run_spectral_fit( spectral_folder = "./spectra_swift_xrt/" ):
     Xset.xsect = "vern"    # set the photoelectric absorption cross-sections
     Xset.chatter = 2 # set the console chatter level... change this to 10 for more chatter
     Xset.logChatter = 20
-    Xset.openLog("xspec.log") 
+    Xset.openLog(folder+"xspec.log") 
     #Xset.parallel.error = 1 # previously 10, i.e. use up to 10 parallel processes during the Fit.error() command runs... however, this caused issues with the parameter saving being done before the values were updated during the error calculation
 
     # Fit: manager class for setting properties and running a fit
@@ -683,10 +687,15 @@ def run_spectral_fit( spectral_folder = "./spectra_swift_xrt/" ):
     xrt_dict = {model: {"IDs": IDs.tolist(), "isot_i": start_obs_isots.tolist(), "mjd_mid": mid_mjds.tolist(), "dt_mjd": dt_mjds.tolist(), "exp [s]": exp.tolist(), "counts": tot_counts.tolist(), "binned?": binned.tolist(), "chi2": [], "dof": [], "redchi2": []} for model in models}
 
     print("------------------------------------------------------------")
+
+
+    #############################################
+
+    # Outputs from here on will be saved to file
+    sys.stdout = open(folder+"output.txt", "w")  
     
 
-
-     #############################################
+    #############################################
     
     ## Iterate through each spectrum (i.e. each observation), fit it, get the fit parameters, and then save these.
     for k, spectrum_file in enumerate(spectral_files):
