@@ -115,7 +115,7 @@ If there is heavy pile-up, using the restricted grade selection ('4') can help; 
 Place additional datasets in `./other_lightcurve_data/`:
 - MeerKAT: `meerkat.txt`, using the template
 - BAT: `bat_daily_ave.txt` - https://swift.gsfc.nasa.gov/results/transients/
-- MAXI: `maxi_daily_ave.txt` - https://maxi.riken.jp/star_data/
+- MAXI: `maxi_daily_ave.txt` - https://maxi.riken.jp/top/lc.html
 
 
 
