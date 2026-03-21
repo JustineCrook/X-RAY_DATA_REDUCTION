@@ -420,10 +420,11 @@ def initialise_model(model, parameters=None, fix_names=None, fix_values=None, fl
     # par6: norm; K, photons/keV/cm2/s at 1 keV.
     # par7: temperature of the inner disk radius (keV)
     # par8: norm for bb; (Rin/ D10)^2 cos0, where where Rin is an apparent inner disk radius in km, D10 the distance to the source in units of 10 kpc, and the angle of the disk ( = 0 is face-on). On the correction factor between the apparent inner disk radius and the realistic radius, see e.g. Kubota et al. 1998.
+    # IMPORTANT: When we pass parameters to this model, norm1 is always fixed
     elif model=="cflux_(powerlaw+diskbb)":
         mod = 'tbabs*cflux(powerlaw + diskbb)'
         flux = flux_guess_logged
-        initial_pars = {1:nh, 2: Emin, 3: Emax, 4: f'{flux}', 5:gamma, 6:norm1, 7: Tin, 8: f'{norm2} -1'}
+        initial_pars = {1:nh, 2: Emin, 3: Emax, 4: f'{flux}', 5:gamma, 6:norm1, 7: Tin, 8: norm2}
         
 
     elif model=="diskbb+bbodyrad":
@@ -431,7 +432,7 @@ def initialise_model(model, parameters=None, fix_names=None, fix_values=None, fl
         initial_pars = {1:nh, 2:Tin, 3:norm1, 4: kT, 5:norm2}
         
         
-
+    # IMPORTANT: When we pass parameters to this model, norm1 is always fixed
     elif model=="cflux_(diskbb+bbodyrad)":
         mod = 'tbabs * cflux* (diskbb + bbodyrad)'
         flux = flux_guess_logged
@@ -443,7 +444,7 @@ def initialise_model(model, parameters=None, fix_names=None, fix_values=None, fl
         initial_pars = {1:nh, 2:gamma, 3:norm1, 4: kT, 5:norm2}
         
 
-
+    # IMPORTANT: When we pass parameters to this model, norm1 is always fixed
     elif model=="cflux_(powerlaw+bbodyrad)":
         mod = 'tbabs * cflux* (powerlaw + bbodyrad)'
         flux = flux_guess_logged
@@ -862,6 +863,7 @@ def run_spectral_fit( spectral_folder = "./spectra_swift_xrt/" ):
                     #######
 
                     ## For the two-component models, we add cflux afterwards
+                    # The first normalisation needs to be fixed: https://heasarc.gsfc.nasa.gov/docs/software/xspec/manual//node303.html
 
                     # Two-step powerlaw+diskbb
                     if mod_name == "powerlaw+diskbb":
