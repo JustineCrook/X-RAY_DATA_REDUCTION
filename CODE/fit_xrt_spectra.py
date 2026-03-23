@@ -190,7 +190,7 @@ def plot_resid(spectrum_name, mod_name, mod, save=True, log=True, fit_with_binni
     ax[2].legend()
 
     title = "Spectrum: " + spectrum_name + " & model: " + mod_name
-    if setplot_rebin_mincounts is not None and setplot_rebin_maxbins is not None: title+=  "\n bin mincounts: " + str(setplot_rebin_mincounts) + "; bin maxbins: " + str(setplot_rebin_maxbins)
+    if setplot_rebin_mincounts is not None and setplot_rebin_maxbins is not None: title = title +  "\n bin mincounts: " + str(setplot_rebin_mincounts) + "; bin maxbins: " + str(setplot_rebin_maxbins)
     ax[0].set_title(title)
 
     # Save the results
@@ -259,7 +259,7 @@ def plot_resid(spectrum_name, mod_name, mod, save=True, log=True, fit_with_binni
     ax[0].set_ylabel(r"$E^2 F(E)$ (keV$^2$ photons cm$^{-2}$ s$^{-1}$ keV$^{-1}$)")
     ax[0].legend()
     title = f"{spectrum_name} – {mod_name} (Unfolded)" 
-    if setplot_rebin_mincounts is not None and setplot_rebin_maxbins is not None: title+= "\n bin mincounts: " + str(setplot_rebin_mincounts) + "; bin maxbins: " + str(setplot_rebin_maxbins)
+    if setplot_rebin_mincounts is not None and setplot_rebin_maxbins is not None: title = title + "\n bin mincounts: " + str(setplot_rebin_mincounts) + "; bin maxbins: " + str(setplot_rebin_maxbins)
     ax[0].set_title(title)
 
     ax[1].plot(x, np.array(resids)/yer_counts, 'g', label=r"(data-model)/$\sigma_{\text{data}}$", linewidth=1)
