@@ -133,7 +133,7 @@ DISKBB_TIN_INIT = '0.5,,0.05,0.05,4.0,4.0'  # temperature
 PLAW_GAMMA_INIT = '1.7,,0.5,0.5,4.0,4.0' # spectral index, range 0-4 
 BBODY_KT_INIT = '0.6,,0.05,0.05,4.0,4.0'
 # If we want a different gamma for the powerlaw+diskbb models
-PLAW_GAMMA_INIT_IMS = '2.0,,0.5,0.5,4.0,4.0'
+PLAW_GAMMA_INIT_IMS = '2.0,,0.5,0.5,3.0,3.0'
 
 
 # Distance to the source in kpc

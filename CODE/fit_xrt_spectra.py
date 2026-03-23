@@ -151,6 +151,7 @@ def plot_resid(spectrum_name, mod_name, mod, save=True, log=True, fit_with_binni
 
     if setplot_rebin_mincounts is not None and setplot_rebin_maxbins is not None:
         Plot.setRebin(setplot_rebin_mincounts, setplot_rebin_maxbins)
+    else: Plot.setRebin(0.0, 1) # reset 
 
     mpl.rcParams['xtick.labelbottom'] = True
 
