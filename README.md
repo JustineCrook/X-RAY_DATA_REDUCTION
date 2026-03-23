@@ -219,7 +219,7 @@ Note regarding the residuals:
 - Even if the spectra were fit with bin1, it is useful to rebin the spectra just for visualisation -- so that the fit can be better examined by eye. 
 - In XSPEC, this can be achieved through `setplot rebin mincounts maxbins` where `mincounts` is the minimum number of counts per bin, and `maxbins` is the maximum number of bins to combine. 
 - As such, for each spectrum that was not binned during fitting, if the counts is greater than `COUNTS_THRESHOLD`, I use `mincounts = 20` and `maxbins = 5`. 
-If the counts is less than this but greater than `LOW_COUNT_THRESHOLD`, I use `mincounts = 10` and `maxbins = 3`. 
+If the counts is less than this but greater than 100, I use `mincounts = 10` and `maxbins = 3`. 
 Else, I used `mincounts = 3` and `maxbins = 3`. 
 The setting used is shown in the title of the residual plots. 
 

@@ -445,7 +445,6 @@ def initialise_model(model, parameters=None, fix_names=None, fix_values=None, fl
         flux = flux_guess_logged
         initial_pars = {1:nh, 2: Emin, 3: Emax, 4: f'{flux}', 5:Tin, 6:norm1, 7: kT, 8: norm2}
         
-    # IMPORTANT: When we pass parameters to this model, norm1 is always fixed
     elif model=="powerlaw+bbodyrad":
         mod = 'tbabs * (powerlaw + bbodyrad)'
         initial_pars = {1:nh, 2:gamma, 3:norm1, 4: kT, 5:norm2}
@@ -1067,7 +1066,7 @@ def run_spectral_fit( spectral_folder = "./spectra_swift_xrt/" ):
                     if tot_counts[k] > counts_threshold:
                         rebin_mincounts = 20
                         rebin_maxbins = 5
-                    elif tot_counts[k] > low_count_threshold: 
+                    elif tot_counts[k] > 100: 
                         rebin_mincounts = 10
                         rebin_maxbins = 3
                     else: 
