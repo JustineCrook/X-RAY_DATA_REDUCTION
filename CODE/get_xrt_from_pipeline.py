@@ -277,7 +277,7 @@ def group_spectra():
 
 
     # Sorts all the source spectrum files alphabetically
-    source_spectra = sorted(glob.glob(f'{spectrum_directory}/*source.pi'))
+    source_spectra = sorted(glob.glob(f'{spectrum_directory}*source.pi'))
     print("Source spectra: ", source_spectra)
     print()
     print()
