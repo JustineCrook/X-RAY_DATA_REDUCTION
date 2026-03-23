@@ -206,11 +206,11 @@ where:
 
 ### Outputs
 
-If binned spectra were used (FIT_WITH_BINNING=True), the fitting results and residuals are respectively found in:
+If binned spectra were used (`FIT_WITH_BINNING=True`), the fitting results and residuals are respectively found in:
 - `./spectral_fit_results_bin/`  
 - `./spectral_fit_residuals_bin/`  
 
-If bin1 spectra were used (FIT_WITH_BINNING=False), the fitting results and residuals are respectively found in:
+If bin1 spectra were used (`FIT_WITH_BINNING=False`), the fitting results and residuals are respectively found in:
 - `./spectral_fit_results_bin1/`  
 - `./spectral_fit_residuals_bin1/`  
 
@@ -258,7 +258,7 @@ After fitting, based on the results (and any other knowledge about spectral stat
 
 ### Parameter: `MODELS_INDEXES`
 - A nested list defining which model applies to which index range. 
-- Each outer element corresponds to the MODELS array defined above. The inner elements are the index ranges for each model. 
+- Each outer element corresponds to the `MODELS` array defined above. The inner elements are the index ranges for each model. 
 - Indexes correspond to rows in `fit_outputs.txt` (leftmost number). 
 
 
