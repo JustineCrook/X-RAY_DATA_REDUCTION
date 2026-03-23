@@ -197,6 +197,12 @@ where:
 - `PLAW_GAMMA_INIT_IMS` -  If we want a different gamma for the powerlaw+diskbb models.  
 
 
+### Adding Models
+
+- If you wish to add a model, you should do so in `initialise_model`. 
+- Also every time the code checks whether all the models specified in `MODELS` are valid models, you should add the name for the new model.
+
+
 
 ### Outputs
 
@@ -207,6 +213,15 @@ If binned spectra were used (FIT_WITH_BINNING=True), the fitting results and res
 If bin1 spectra were used (FIT_WITH_BINNING=False), the fitting results and residuals are respectively found in:
 - `./spectral_fit_results_bin1/`  
 - `./spectral_fit_residuals_bin1/`  
+
+
+Note regarding the residuals: 
+- Even if the spectra were fit with bin1, it is useful to rebin the spectra just for visualisation -- so that the fit can be better examined by eye. 
+- In XSPEC, this can be achieved through `setplot rebin mincounts maxbins` where `mincounts` is the minimum number of counts per bin, and `maxbins` is the maximum number of bins to combine. 
+- As such, for each spectrum that was not binned during fitting, if the counts is greater than `COUNTS_THRESHOLD`, I use `mincounts = 20` and `maxbins = 5`. 
+If the counts is less than this but greater than `LOW_COUNT_THRESHOLD`, I use `mincounts = 10` and `maxbins = 3`. 
+Else, I used `mincounts = 3` and `maxbins = 3`. 
+The setting used is shown in the title of the residual plots. 
 
 
 Each folder `./spectral_fit_results_bin*/ contains:

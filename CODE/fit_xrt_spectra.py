@@ -141,13 +141,16 @@ def f_test(chi1, dof1, chi2, dof2):
 ##########################################################################################
 
 
-def plot_resid(spectrum_name, mod_name, mod, save=True, log=True, fit_with_binning=True):
+def plot_resid(spectrum_name, mod_name, mod, save=True, log=True, fit_with_binning=True, setplot_rebin_mincounts= None, setplot_rebin_maxbins = None):
     """
     Helper method to plot the residuals for the fits
     """
 
     Plot.device = '/null'
     Plot.xAxis = "KeV"  # x-axis for plotting set to energy instead of channel
+
+    if setplot_rebin_mincounts is not None and setplot_rebin_maxbins is not None:
+        Plot.setRebin(setplot_rebin_mincounts, setplot_rebin_maxbins)
 
     mpl.rcParams['xtick.labelbottom'] = True
 
@@ -186,7 +189,9 @@ def plot_resid(spectrum_name, mod_name, mod, save=True, log=True, fit_with_binni
     ax[2].set_xlabel(residLabels[0])
     ax[2].legend()
 
-    ax[0].set_title("Spectrum: " + spectrum_name + " & model: " + mod_name)
+    title = "Spectrum: " + spectrum_name + " & model: " + mod_name
+    if setplot_rebin_mincounts is not None and setplot_rebin_maxbins is not None: title+= + "\n bin mincounts: " + str(setplot_rebin_mincounts) + "; bin maxbins: " + str(setplot_rebin_maxbins)
+    ax[0].set_title(title)
 
     # Save the results
     if save: plt.savefig(plots_dir+ spectrum_name+"_"+mod_name)
@@ -253,7 +258,9 @@ def plot_resid(spectrum_name, mod_name, mod, save=True, log=True, fit_with_binni
     ax[0].set_xlabel("Energy (keV)")
     ax[0].set_ylabel(r"$E^2 F(E)$ (keV$^2$ photons cm$^{-2}$ s$^{-1}$ keV$^{-1}$)")
     ax[0].legend()
-    ax[0].set_title(f"{spectrum_name} – {mod_name} (Unfolded)")
+    title = f"{spectrum_name} – {mod_name} (Unfolded)" 
+    if setplot_rebin_mincounts is not None and setplot_rebin_maxbins is not None: title+= "\n bin mincounts: " + str(setplot_rebin_mincounts) + "; bin maxbins: " + str(setplot_rebin_maxbins)
+    ax[0].set_title(title)
 
     ax[1].plot(x, np.array(resids)/yer_counts, 'g', label=r"(data-model)/$\sigma_{\text{data}}$", linewidth=1)
     ax[1].set_ylabel(residLabels[1])
@@ -438,7 +445,7 @@ def initialise_model(model, parameters=None, fix_names=None, fix_values=None, fl
         flux = flux_guess_logged
         initial_pars = {1:nh, 2: Emin, 3: Emax, 4: f'{flux}', 5:Tin, 6:norm1, 7: kT, 8: norm2}
         
- 
+    # IMPORTANT: When we pass parameters to this model, norm1 is always fixed
     elif model=="powerlaw+bbodyrad":
         mod = 'tbabs * (powerlaw + bbodyrad)'
         initial_pars = {1:nh, 2:gamma, 3:norm1, 4: kT, 5:norm2}
@@ -492,7 +499,7 @@ def run_spectral_fit( spectral_folder = "./spectra_swift_xrt/" ):
 
     models = MODELS
 
-    incbad, fit_with_binning, renorm, add_systematic = INCBAD, FIT_WITH_BINNING, RENORM, ADD_SYS_ERR
+    incbad, fit_with_binning, renorm, add_systematic, counts_threshold = INCBAD, FIT_WITH_BINNING, RENORM, ADD_SYS_ERR, COUNTS_THRESHOLD
     min_E_keV, Emin, Emax = MIN_E_KEV, EMIN, EMAX
     nH, nH_fix_all_epochs, nH_counts_threshold = NH, NH_FIX_ALL_EPOCHS, NH_COUNTS_THRESHOLD
     low_count_threshold, Gamma_low_count = LOW_COUNT_THRESHOLD, PLAW_GAMMA_LOW_COUNT
@@ -1052,8 +1059,23 @@ def run_spectral_fit( spectral_folder = "./spectra_swift_xrt/" ):
                 start = base.find("Obs")
                 spectrum_file_name = base[start:]
                 spectrum_name = "MJD"+date+"_"+spectrum_file_name # spectrum name includes date
+
+
+                # When no binning was conducted for the fitting, when plotting the residuals, for visualisation (only), it is useful to rebin the spectra. 
+                rebin_mincounts, rebin_maxbins = None, None
+                if bin_counts[k] == 1:
+                    if tot_counts[k] > counts_threshold:
+                        rebin_mincounts = 20
+                        rebin_maxbins = 5
+                    elif tot_counts[k] > low_count_threshold: 
+                        rebin_mincounts = 10
+                        rebin_maxbins = 3
+                    else: 
+                        rebin_mincounts = 2
+                        rebin_maxbins = 3
+                
                 # The function below plots the residuals from the last fit 
-                plot_resid(spectrum_name, mod_name, mod_obj, fit_with_binning=fit_with_binning)
+                plot_resid(spectrum_name, mod_name, mod_obj, fit_with_binning=fit_with_binning, setplot_rebin_mincounts= rebin_mincounts, setplot_rebin_maxbins = rebin_maxbins)
             
             print()
 

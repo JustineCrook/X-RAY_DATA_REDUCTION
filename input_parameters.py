@@ -89,7 +89,7 @@ MJD_MAX = None # Maximum MJD to include (e.g., 59750.0)
 
 # Whether to run with binning or not
 # If False, we use single-count binning
-FIT_WITH_BINNING = True
+FIT_WITH_BINNING = False
 
 # Sometimes it helps to renormalise the spectra before running the fits
 RENORM = False
