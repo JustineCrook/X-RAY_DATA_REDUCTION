@@ -190,7 +190,7 @@ def plot_resid(spectrum_name, mod_name, mod, save=True, log=True, fit_with_binni
     ax[2].legend()
 
     title = "Spectrum: " + spectrum_name + " & model: " + mod_name
-    if setplot_rebin_mincounts is not None and setplot_rebin_maxbins is not None: title+= + "\n bin mincounts: " + str(setplot_rebin_mincounts) + "; bin maxbins: " + str(setplot_rebin_maxbins)
+    if setplot_rebin_mincounts is not None and setplot_rebin_maxbins is not None: title+=  "\n bin mincounts: " + str(setplot_rebin_mincounts) + "; bin maxbins: " + str(setplot_rebin_maxbins)
     ax[0].set_title(title)
 
     # Save the results
