@@ -1069,7 +1069,7 @@ def run_spectral_fit( spectral_folder = "./spectra_swift_xrt/" ):
                     elif tot_counts[k] > 100: 
                         rebin_mincounts = 10
                         rebin_maxbins = 3
-                    else: 
+                    elif tot_counts[k] > low_count_threshold: 
                         rebin_mincounts = 2
                         rebin_maxbins = 3
                 
