@@ -53,7 +53,7 @@ Notably:
 ## Code Structure
 
 - All user inputs are defined in `input_parameters.py`
-- In `input_parameters.py`, change the ANALYSIS_TYPE to be one of the following, which corresponds to the sub-sections below:
+- In `input_parameters.py`, change the `ANALYSIS_TYPE` to be one of the following, which corresponds to the sub-sections below:
     - `get_swift_xrt_data`
     - `plot_count_rates_and_hr`
     - `group_spectra`
