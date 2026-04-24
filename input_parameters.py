@@ -3,7 +3,7 @@
 ## FUNCTION TO RUN
 # Change the line below to run different functions
 # Options: get_swift_xrt_data, group_spectra, plot_count_rates_and_hr, fit, get_final_results
-ANALYSIS_TYPE = "fit"
+ANALYSIS_TYPE = "plot_count_rates_and_hr"
  
 
 
@@ -64,10 +64,12 @@ COUNTS_THRESHOLD = 300
 ## PLOT COUNT RATES AND HARNESS RATIO -- plot_count_rates_and_hr
 # Function: Plot the count rate light curve and hardness ratio, as calculated by the swifttools.ukssdc pipeline.
 
-
-TRANSITIONS = None # MJD of state transitions to mark with vertical lines (if any); e.g. [59715.0, 59730.0]
-
-
+# Phase intervals for each of the spectral states: QS (quiescent state), HS (hard state), SS (soft state), IMS (intermediate state)
+# If you do not want regions plotted, leave the corresponding list as []
+QS = []
+HS = [ [59081,59094], [60570,60581], [60619,60650]]
+IMS = [[59094,59100], [60581,60583], [60609,60619] ]
+SS = [[60583,60604]]
 
 
 ######################################################################################################################

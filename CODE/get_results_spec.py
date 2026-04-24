@@ -33,7 +33,7 @@ import re
 
 
 from plotting_helpers import *
-from get_results_data import get_swift_xrt_counts
+from get_results_data import get_maxi_counts, get_swift_xrt_counts, get_bat_counts,read_radio_file
 
 
 import sys
@@ -47,6 +47,14 @@ from input_parameters import *
 ####################################################################################################################
 ## SPECTRAL RESULTS FUNCTIONS
 ####################################################################################################################
+
+
+colours_states = {
+    "QS":  "tab:blue",
+    "HS":  "tab:orange",
+    "SS":  "tab:green",
+    "IMS": "tab:purple",
+}
 
 
 
@@ -252,7 +260,7 @@ def plot_spectral_results(models = None, models_indexes = None):
     if models_indexes is None: models_indexes = MODELS_INDEXES
 
     fit_with_binning = FIT_WITH_BINNING
-    transitions = TRANSITIONS
+    qs, hs, ss, ims = QS, HS, SS, IMS
     xrt_soft_lo, xrt_soft_hi, xrt_hard_lo, xrt_hard_hi = SOFT_LO, SOFT_HI, HARD_LO, HARD_HI
 
     if models_indexes!=[]: 
@@ -301,7 +309,7 @@ def plot_spectral_results(models = None, models_indexes = None):
 
 
     # Split into contiguous segments when gap > 60 days
-    _gap_days = 60.0
+    _gap_days = 200.0
     _mjd_all = all_dates_MJD.copy()
     _diffs = np.diff(_mjd_all)
     _break_idxs = np.where(_diffs > _gap_days)[0]
@@ -323,11 +331,65 @@ def plot_spectral_results(models = None, models_indexes = None):
     fig.subplots_adjust(left=0.05, right=0.95, top=0.95, bottom=0.05)
 
 
-    # HR
-    # Filter the array to only include values where the error is low
+    # Make the second figure
+    fig_alt, ax_alt = plt.subplots(5, figsize=(30,15), sharex='col', gridspec_kw={'hspace': 0.05}) 
+    fig_alt.subplots_adjust(left=0.05, right=0.95, top=0.95, bottom=0.05)
+
+
+    # Swift/XRT
     lc_mjd, lc_cps, lc_cps_nerr, lc_cps_perr, uplims_bool, obs_type, hr_mjds, hr, hr_err, cps_low, cps_low_err, cps_high, cps_high_err = get_swift_xrt_counts(verbose=False)
+
+
+    # Load radio data
+    incl_mkt = True
+    try: 
+        mkt_mjds, mkt_Fr, mkt_Fr_unc, mkt_uplims_bool = read_radio_file() # This data is already sorted in time
+    except:
+        incl_mkt = False
+        print("No MeerKAT data")
+
+    # Load other X-ray data
+    incl_maxi = True
+    try: 
+        # MAXI 
+        (maxi_mjds, maxi_hr, maxi_hr_unc,
+        maxi_2_4_cps, maxi_2_4_cps_unc,
+        maxi_4_10_cps, maxi_4_10_cps_unc,
+        maxi_2_20_cps, maxi_2_20_cps_unc,
+        maxi_10_20_cps, maxi_10_20_cps_unc) = get_maxi_counts()
+    except: 
+        incl_maxi = False
+        print("No MAXI data")
+    incl_bat = True
+    try: 
+        # BAT
+        bat_mjds, bat_cps, bat_unc = get_bat_counts()
+    except: 
+        incl_bat = False
+        print("No BAT data")
+
+
+    # BAT data
+    if incl_bat:
+        ax_alt[0].errorbar(Time(bat_mjds, format='mjd').datetime, bat_cps, bat_unc, fmt='o', color='orange')
+
+    # MAXI HR
+    if incl_maxi:
+        # Filter the array to only include values where the error is low
+        ax_alt[1].errorbar(Time(maxi_mjds, format='mjd').datetime, maxi_hr, maxi_hr_unc, fmt='o', color='blue')
+
+
+    # Swift/XRT HR
+    # Filter the array to only include values where the error is low
     mask= hr_err <= 0.5
     ax[1].errorbar(Time(hr_mjds[mask], format='mjd').datetime, hr[mask], [hr_err[mask], hr_err[mask]], fmt='o', color='k',mfc='black')
+    ax_alt[2].errorbar(Time(hr_mjds[mask], format='mjd').datetime, hr[mask], [hr_err[mask], hr_err[mask]], fmt='o', color='red')
+
+
+    # MeerKAT radio data
+    if incl_mkt:
+        ax_alt[4].errorbar(Time(mkt_mjds, format='mjd').datetime, mkt_Fr, mkt_Fr_unc, uplims= mkt_uplims_bool, fmt='o', color='green')
+
 
 
     length = len(all_dates_MJD)    
@@ -386,7 +448,7 @@ def plot_spectral_results(models = None, models_indexes = None):
         
         
         ax[0].errorbar(Time(dates_MJD, format='mjd').datetime, flux, [flux_neg, flux_pos], fmt='o',color='k', mfc=colours[i])
-
+        ax_alt[3].errorbar(Time(dates_MJD, format='mjd').datetime, flux, [flux_neg, flux_pos], fmt='o',color='red')
 
 
         if models_indexes!=[]:
@@ -452,6 +514,28 @@ def plot_spectral_results(models = None, models_indexes = None):
 
 
 
+        # Plot shaded regions
+        for i, ax_ in enumerate(ax):
+            for (xk, label) in [(qs, "QS"), (hs, "HS"), (ss, "SS"), (ims, "IMS")]:
+                for k, (x0, x1) in enumerate(xk):
+                    ax_.axvspan(
+                        Time(x0, format='mjd').datetime, Time(x1, format='mjd').datetime,
+                        color=colours_states[label],
+                        alpha=0.2,
+                        label=label if (k == 0 and i==5) else None  # only label once for legend
+                    )
+
+        for i, ax_ in enumerate(ax_alt):
+            for (xk, label) in [(qs, "QS"), (hs, "HS"), (ss, "SS"), (ims, "IMS")]:
+                for k, (x0, x1) in enumerate(xk):
+                    ax_.axvspan(
+                        Time(x0, format='mjd').datetime, Time(x1, format='mjd').datetime,
+                        color=colours_states[label],
+                        alpha=0.2,
+                        label=label if (k == 0 and i==4) else None  # only label once for legend
+                    )
+
+
         # Set plot constraints
         ax[0].set_yscale('log')
         ax[0].set_ylabel('Flux [1$-$10 keV]\n(erg s$^{-1}$ cm$^{-1}$)')
@@ -463,21 +547,25 @@ def plot_spectral_results(models = None, models_indexes = None):
         ax[5].set_yscale('log')
         ax[5].legend(fontsize=11)
 
-        for i in range(6):
-            if transitions is not None:
-                for t in transitions: # transition points
-                    ax[i].axvline(Time(t, format='mjd').datetime, color='yellow', linestyle='--', linewidth=1.5)
+
+        ax_alt[0].set_ylabel('BAT\n15-50 keV')
+        ax_alt[0].set_yscale('log')
+        ax_alt[1].set_ylabel('MAXI\nHR\n(4-10 / 2-4)')
+        ax_alt[2].set_ylabel(f'Swift/XRT\n({xrt_hard_lo}-{xrt_hard_hi}) keV c/s')
+        ax_alt[3].set_ylabel('Swift/XRT flux [1$-$10 keV]\n(erg s$^{-1}$ cm$^{-1}$)')
+        ax_alt[3].set_yscale('log')
+        ax_alt[4].set_ylabel('MeerKAT\n(mJy)')
+        ax_alt[4].set_yscale('log')
+        ax_alt[4].legend(fontsize=11)
 
 
 
     top_ax = ax[0]    
     ax_main = ax[-1]      
     orig_xlim = ax_main.get_xlim()
-    orig_ylim = ax_main.get_ylim()
     orig_top_locator = top_ax.xaxis.get_major_locator()
     orig_top_formatter = top_ax.xaxis.get_major_formatter()
     orig_top_xlabel = top_ax.get_xlabel()
-    orig_axes = list(fig.axes)   # snapshot of axes that exist now
     # Save separate images for each contiguous segment 
     for seg_i, (sidx, eidx) in enumerate(_segments, start=1):
         
@@ -490,6 +578,7 @@ def plot_spectral_results(models = None, models_indexes = None):
         seg_xlim_dt = Time([seg_xmin, seg_xmax], format='mjd').datetime
 
         ax[-1].set_xlim(seg_xlim_dt[0], seg_xlim_dt[1])
+        ax_alt[-1].set_xlim(seg_xlim_dt[0], seg_xlim_dt[1])
 
         # Optionally adjust formatting ticks for this narrower range:
         _all_dates_seg = _mjd_all[(_mjd_all >= seg_mjd_min) & (_mjd_all <= seg_mjd_max)]
@@ -499,14 +588,20 @@ def plot_spectral_results(models = None, models_indexes = None):
         else:
             dt_seg = 1
         FormatAxis(ax, _all_dates_seg, interval=dt_seg)
-
+        FormatAxis(ax_alt, _all_dates_seg, interval=dt_seg)
 
         # Save segment image
         name = "_".join(models)
-        if models_indexes!=[]: seg_name = f"{final_dir}final_fit_selection_{name}_segment{seg_i}.png"
-        else: seg_name = f"{filename}all_fits_{name}_segment{seg_i}.png"
-        print(f"Saving segment {seg_i}: MJD {seg_mjd_min:.2f}--{seg_mjd_max:.2f} -> {seg_name}")
-        plt.savefig(seg_name)
+        if models_indexes!=[]: 
+            seg_name = f"{final_dir}final_fit_selection_{name}_segment{seg_i}.png"
+            seg_name_alt = f"{final_dir}final_fit_selection_fluxes_{name}_segment{seg_i}_alt.png"
+        else: 
+            seg_name = f"{filename}all_fits_{name}_segment{seg_i}.png"
+            seg_name_alt = f"{filename}all_fits_{name}_segment{seg_i}_alt.png"
+        print(f"Saving segment {seg_i}: MJD {seg_mjd_min:.2f}--{seg_mjd_max:.2f} -> {seg_name} and {seg_name_alt}")
+        fig.savefig(seg_name)
+        fig_alt.savefig(seg_name_alt)
+        
 
         sec = getattr(ax_main, "_mjd_secondary_axis", None)
         if sec is not None:

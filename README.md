@@ -121,7 +121,15 @@ Place additional datasets in `./other_lightcurve_data/`:
 
 ### Parameters
 
-- `TRANSITIONS` – Optional vertical lines at specific times (e.g., state transitions) in the plots
+- `QS`, `HS`, `IMS`, `SS` – Lists containing MJD ranges for the quiescent state (QS), hard state (HS), intermediate state (IMS), and soft state (SS). 
+These are plotted as coloured regions. Leave as empty lists (i.e., []) if not required.
+Example:
+```python
+QS = []
+HS = [ [59081,59094], [60570,60581], [60619,60650]]
+IMS = [[59094,59100], [60581,60583], [60609,60619] ]
+SS = [[60583,60604]]
+```
 
 
 
